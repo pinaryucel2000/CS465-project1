@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+  <!-- CODE TAKEN FROM WEB FOR COLOR PICKER -->
+  <script
+    src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+    type="text/javascript"
+    charset="utf-8"
+  ></script>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/colorjoe@4.1.1/css/colorjoe.css"
+  />
+  <script src="https://cdn.jsdelivr.net/npm/colorjoe@4.1.1/dist/colorjoe.js"></script>
+  <!-- CODE TAKEN FROM WEB FOR COLOR PICKER -->
+
+  <link
+    rel="stylesheet"
+    href="https://use.fontawesome.com/releases/v5.12.1/css/all.css"
+    crossorigin="anonymous"
+  />
+
+  <!-- CODE TAKEN FROM WEB FOR SORTABLE LIST UI -->
+  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+  <script>
+    $(function () {
+      $("#sortable").sortable();
+    });
+  </script>
+  <!-- CODE TAKEN FROM WEB FOR SORTABLE LIST UI -->
+
+  <link rel="stylesheet" type="text/css" href="style.css" />
+  <script id="vertex-shader" type="x-shader/x-vertex">
+
+    attribute vec3 vPosition;
+    attribute vec3 vColor;
+    attribute float vLayer;
+    varying vec4 fColor;
+
+    void main(){
+      gl_Position = vec4(vPosition[0], vPosition[1], vPosition[2] - vLayer, 1.0);
+      fColor = vec4(vColor, 1.0);
+    }
+  </script>
+
+  <script id="fragment-shader" type="x-shader/x-fragment">
+    precision mediump float;
+    varying vec4 fColor;
+
+    void main(){
+        gl_FragColor = fColor;
+    }
+  </script>
+
+  <script type="text/javascript" src="../Common/webgl-utils.js"></script>
+  <script type="text/javascript" src="../Common/initShaders.js"></script>
+  <script type="text/javascript" src="../Common/MV.js"></script>
+  <script type="text/javascript" src="paint.js"></script>
+
+  <body>
+    <div class="main">
+      <canvas id="gl-canvas" width="800" height="800">
+        > Oops ... your browser doesn't support the HTML5 canvas element
+      </canvas>
+
+      <div class="column1">
+        <div>
+          <button class="save" id="save">Save</button>
+          <input type="file" id="file" />
+        </div>
+
+        <!-- CODE TAKEN FROM WEB FOR COLOR PICKER -->
+        <div id="colorpicker"></div>
+        <!-- CODE TAKEN FROM WEB FOR COLOR PICKER -->
+
+        <div class="colorButtons">
+          <button
+            class="redButton"
+            onclick="setBrushColor(vec4(1.0, 0.0, 0.0, 1.0));"
+          ></button>
+          <button
+            class="yellowButton"
+            onclick="setBrushColor(vec4(1.0, 1.0, 0.0, 1.0));"
+          ></button>
+          <button
+            class="greenButton"
+            onclick="setBrushColor( vec4(0.0, 1.0, 0.0, 1.0));"
+          ></button>
+          <button
+            class="blueButton"
+            onclick="setBrushColor(vec4(0.0, 0.0, 1.0, 1.0));"
+          ></button>
+          <button
+            class="magentaButton"
+            onclick="setBrushColor(vec4(1.0, 0.0, 1.0, 1.0));"
+          ></button>
+          <button
+            class="cyanButton"
+            onclick="setBrushColor(vec4(0.0, 1.0, 1.0, 1.0));"
+          ></button>
+          <button
+            class="purpleButton"
+            onclick="setBrushColor(vec4(0.4, 0.2, 1.0, 1.0));"
+          ></button>
+          <button
+            class="navyButton"
+            onclick="setBrushColor(vec4(0.1, 0.1, 0.4, 1.0));"
+          ></button>
+        </div>
+
+        <div class="flex">
+          <div class="tools">
+            <div>
+              <button id="brush" onclick="brushModeOn();">
+                <i class="fas fa-paint-brush"></i>
+              </button>
+              <button id="eraser" onclick="eraserModeOn();">
+                <i class="fas fa-eraser"></i>
+              </button>
+            </div>
+
+            <div class="undo-redo">
+              <button onclick="undo();">
+                <i class="fas fa-undo"></i>
+              </button>
+              <button onclick="redo();">
+                <i class="fas fa-redo"></i>
+              </button>
+            </div>
+          </div>
+
+          <ul id="sortable">
+            <li class="ui-state-default" id="A">
+              <input
+                type="radio"
+                name="layer"
+                id="radioA"
+                onclick="setCurrentLayer('A');"
+                checked="checked"
+              />Layer A
+            </li>
+
+            <li class="ui-state-default" id="B">
+              <input
+                type="radio"
+                name="layer"
+                id="radioB"
+                onclick="setCurrentLayer('B');"
+              />Layer B
+            </li>
+
+            <li class="ui-state-default" id="C">
+              <input
+                type="radio"
+                name="layer"
+                id="radioC"
+                onclick="setCurrentLayer('C');"
+              />Layer C
+            </li>
+
+            <li class="ui-state-default" id="D">
+              <input
+                type="radio"
+                name="layer"
+                id="radioD"
+                onclick="setCurrentLayer('D');"
+              />Layer D
+            </li>
+          </ul>
+        </div>
+
+        <div class="flex">
+          <div class="shapes">
+            <button onclick="drawShape('triangle');">Triangle</button>
+            <button onclick="drawShape('rectangle');">Rectangle</button>
+            <button onclick="drawShape('ellipse');">Ellipse</button>
+            <button onclick="drawShape('unfilledTriangle');">
+              Unfilled Triangle
+            </button>
+            <button onclick="drawShape('unfilledRectangle');">
+              Unfilled Rectangle
+            </button>
+            <button onclick="drawShape('unfilledEllipse');">
+              Unfilled Ellipse
+            </button>
+          </div>
+
+          <div class="copy-paste">
+            <button onclick="copyOn();">Copy</button>
+            <button onclick="pasteOn();">Paste</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CODE TAKEN FROM WEB FOR COLOR PICKER -->
+    <script type="text/javascript">
+      $(document).ready(function () {
+        const joe = colorjoe.rgb("colorpicker", "red", [
+          "hex",
+          ["fields", { space: "HSL", limit: 255, fix: 0 }],
+          "currentColor",
+        ]);
+
+        //change the background color of the main div when color changes
+        joe
+          .on("change", function (c) {
+            setBrushColor(
+              vec4(c.rgb()._red, c.rgb()._green, c.rgb()._blue, 1.0)
+            );
+
+            //$("#main").css("backgroundColor", c.css());
+          })
+          .update();
+      });
+    </script>
+    <!-- CODE TAKEN FROM WEB FOR COLOR PICKER -->
+  </body>
+</html>
